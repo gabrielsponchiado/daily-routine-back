@@ -15,5 +15,17 @@ export class TasksService {
       findOne(id: number) {
         return this.tasks.find(tasks => tasks.id === id);
       }
+
+      create(data: any) {
+        const newId = Math.max(...this.tasks.map(t => t.id)) + 1;
+        const newTask = {
+            id: newId,
+            title: data.title,
+            done: data.done ?? false,
+        }
+
+        this.tasks.push(newTask);
+        return newTask
+      }
 }
 
