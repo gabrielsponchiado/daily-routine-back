@@ -14,4 +14,9 @@ export class TasksController {
   findOne(@Param('id') id: string) {
     return this.tasksService.findOne(Number(id));
   }
+
+  @Post()
+  create(@Body() data: any) {
+    return this.tasksService.create(data)
+  }
 }
