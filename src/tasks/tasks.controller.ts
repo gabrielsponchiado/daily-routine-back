@@ -20,8 +20,13 @@ export class TasksController {
     return this.tasksService.create(data)
   }
 
+  @Put(':id')
+  update(@Param('id') id: string, @Body() data: any) {
+    return this.tasksService.update(Number(id), data);
+  }
+
   @Delete(':id')
-  delete(@Param('id') id: number) {
+  delete(@Param('id') id: string) {
     return this.tasksService.delete(Number(id))
   }
 
