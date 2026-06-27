@@ -2,50 +2,50 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class TasksService {
-    private tasks: any[] = [];
-        
-      findAll() {
-        return this.tasks;
-      }
+  private tasks: any[] = [];
 
-      findOne(id: number) {
-        return this.tasks.find(tasks => tasks.id === id);
-      }
+  findAll() {
+    return this.tasks;
+  }
 
-      create(data: any) {
-        const newId = Math.max(...this.tasks.map(t => t.id)) + 1;
-        const newTask = {
-            id: newId,
-            title: data.title,
-            done: data.done ?? false,
-        }
+  findOne(id: number) {
+    return this.tasks.find(tasks => tasks.id === id);
+  }
 
-        this.tasks.push(newTask);
-        return newTask
-      }
+  create(data: any) {
+    const newId =
+      this.tasks.length > 0 ? Math.max(...this.tasks.map((t) => t.id)) + 1 : 1;
 
-      update(id: number, data: any) {
-        const task = this.tasks.find(task => task.id === id)
+    const newTask = {
+      id: newId,
+      title: data.title,
+      done: data.done ?? false,
+    };
+    this.tasks.push(newTask);
+    return newTask;
+  }
 
-        if(!task) return null;
+  update(id: number, data: any) {
+    const task = this.tasks.find((task) => task.id === id);
 
-        if (data.title) task.title = data.title;
-        if (data.done !== undefined) task.done = data.done;
+    if (!task) return null;
 
-        return task;
-      }
+    if (data.title) task.title = data.title;
+    if (data.done !== undefined) task.done = data.done;
 
-      delete(id: number) {
-        const taskId = this.tasks.findIndex(task => task.id === id);
-        
-        if (taskId === -1) {
-          return null;
-        }
-      
-        const deletedTask = this.tasks[taskId];
-        this.tasks.splice(taskId, 1);
-        
-        return deletedTask;
-      }
+    return task;
+  }
+
+  delete(id: number) {
+    const taskId = this.tasks.findIndex((task) => task.id === id);
+
+    if (taskId === -1) {
+      return null;
+    }
+
+    const deletedTask = this.tasks[taskId];
+    this.tasks.splice(taskId, 1);
+
+    return deletedTask;
+  }
 }
-
