@@ -19,4 +19,10 @@ export class TasksController {
   create(@Body() data: any) {
     return this.tasksService.create(data)
   }
+
+  @Delete(':id')
+  delete(@Param('id') id: number) {
+    return this.tasksService.delete(Number(id))
+  }
+
 }
