@@ -28,6 +28,17 @@ export class TasksService {
         return newTask
       }
 
+      update(id: number, data: any) {
+        const task = this.tasks.find(task => task.id === id)
+
+        if(!task) return null;
+
+        if (data.title) task.title = data.title;
+        if (data.done !== undefined) task.done = data.done;
+
+        return task;
+      }
+
       delete(id: number) {
         const taskId = this.tasks.findIndex(task => task.id === id);
         
