@@ -1,33 +1,34 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { TasksService } from './tasks.service';
+import { UpdateTaskDto } from './dto/update-task.dto';
+import { CreateTaskDto } from './dto/create-task.dto';
 
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Get()
-  findAll() {
-    return this.tasksService.findAll();
+  async findAll() {
+    return await this.tasksService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tasksService.findOne(Number(id));
+  async findOne(@Param('id') id: string) {
+    return await this.tasksService.findOne(Number(id));
   }
 
   @Post()
-  create(@Body() data: any) {
-    return this.tasksService.create(data)
+  async create(@Body() data: CreateTaskDto) {
+    return await this.tasksService.create(data)
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() data: any) {
-    return this.tasksService.update(Number(id), data);
+  async update(@Param('id') id: string, @Body() data: UpdateTaskDto) {
+    return await this.tasksService.update(Number(id), data);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.tasksService.delete(Number(id))
+  async delete(@Param('id') id: string) {
+    return await this.tasksService.delete(Number(id))
   }
-
 }
