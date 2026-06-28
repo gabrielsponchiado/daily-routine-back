@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { TaskEntity } from './entities/task.entity';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Injectable()
 export class TasksService {
-  private tasks: any[] = [];
+  private tasks: TaskEntity[] = [];
 
   findAll() {
     return this.tasks;
@@ -12,7 +15,7 @@ export class TasksService {
     return this.tasks.find(tasks => tasks.id === id);
   }
 
-  create(data: any) {
+  create(data: CreateTaskDto) {
     const newId =
       this.tasks.length > 0 ? Math.max(...this.tasks.map((t) => t.id)) + 1 : 1;
 
@@ -25,7 +28,7 @@ export class TasksService {
     return newTask;
   }
 
-  update(id: number, data: any) {
+  update(id: number, data: UpdateTaskDto) {
     const task = this.tasks.find((task) => task.id === id);
 
     if (!task) return null;
