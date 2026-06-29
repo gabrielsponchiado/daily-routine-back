@@ -1,51 +1,59 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { TaskEntity } from './entities/task.entity';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class TasksService {
-  private tasks: any[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
-    return this.tasks;
+  async findAll(userId: number) {
+    return this.prisma.task.findMany({
+      where: {
+        userId: userId,
+      }
+    });
   }
 
-  findOne(id: number) {
-    return this.tasks.find(tasks => tasks.id === id);
-  }
-
-  create(data: any) {
-    const newId =
-      this.tasks.length > 0 ? Math.max(...this.tasks.map((t) => t.id)) + 1 : 1;
-
-    const newTask = {
-      id: newId,
-      title: data.title,
-      done: data.done ?? false,
-    };
-    this.tasks.push(newTask);
-    return newTask;
-  }
-
-  update(id: number, data: any) {
-    const task = this.tasks.find((task) => task.id === id);
-
-    if (!task) return null;
-
-    if (data.title) task.title = data.title;
-    if (data.done !== undefined) task.done = data.done;
-
+  async findOne(id: number) {
+    const task = await this.prisma.task.findUnique({
+      where: { id }
+    }) 
+    if (!task) {
+      throw new NotFoundException(`Task com ID ${id} não encontrada`);
+    }
+    
     return task;
   }
 
-  delete(id: number) {
-    const taskId = this.tasks.findIndex((task) => task.id === id);
+  async create(createTaskDto: CreateTaskDto, userId: number) {
+    return this.prisma.task.create({
+      data: {
+        title: createTaskDto.title,
+        done: createTaskDto.done ?? false,
+        userId: userId,
+      }
+    })
+  }
 
-    if (taskId === -1) {
-      return null;
-    }
+  async update(id: number, data: UpdateTaskDto) {
+    await this.findOne(id);
 
-    const deletedTask = this.tasks[taskId];
-    this.tasks.splice(taskId, 1);
+    return this.prisma.task.update({
+      where: { id },
+      data: {
+        title: data.title,
+        done: data.done,
+      },
+    })
+  }
 
-    return deletedTask;
+  async delete(id: number) {
+    await this.findOne(id)
+
+    return this.prisma.task.delete({
+      where: { id },
+    })
   }
 }
