@@ -8,8 +8,12 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class TasksService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll() {
-    return this.prisma.task.findMany();
+  async findAll(userId: number) {
+    return this.prisma.task.findMany({
+      where: {
+        userId: userId,
+      }
+    });
   }
 
   async findOne(id: number) {
@@ -23,12 +27,12 @@ export class TasksService {
     return task;
   }
 
-  async create(data: CreateTaskDto) {
+  async create(createTaskDto: CreateTaskDto, userId: number) {
     return this.prisma.task.create({
       data: {
-        title: data.title,
-        done: data.done ?? false,
-        userId: 1,
+        title: createTaskDto.title,
+        done: createTaskDto.done ?? false,
+        userId: userId,
       }
     })
   }
